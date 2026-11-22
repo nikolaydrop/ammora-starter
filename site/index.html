@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ammora Showcase: launches and swap (GIWA Sepolia testnet)</title>
+<style>
+:root{--bg:#f4f1ff;--card:rgba(255,255,255,.82);--tx:#1b1740;--mut:#6b6890;--bd:#e0daff;--ac:#7c3aed;--ac2:#06b6d4;--ac3:#f43f5e;--ok:#059669;--er:#e11d48}
+@media (prefers-color-scheme:dark){:root{--bg:#0b0820;--card:rgba(28,22,66,.78);--tx:#f1eeff;--mut:#a29fd0;--bd:#3a3170;--ac:#a78bfa;--ac2:#22d3ee;--ac3:#fb7185;--ok:#34d399;--er:#fb7185}}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font:15px/1.5 system-ui,sans-serif;min-height:100vh;
+background:radial-gradient(900px 500px at 8% -5%,#a78bfa55,transparent),radial-gradient(800px 500px at 100% 0%,#22d3ee44,transparent),radial-gradient(700px 500px at 50% 110%,#fb718544,transparent),var(--bg)}
+main{max-width:980px;margin:0 auto;padding:20px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+h1{font-size:28px;margin:0;background:linear-gradient(90deg,var(--ac),var(--ac2),var(--ac3));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:18px;margin:0 0 12px}
+.badge{display:inline-block;background:linear-gradient(90deg,var(--ac),var(--ac3));color:#fff;border-radius:99px;padding:2px 12px;font-size:12px;margin-left:10px;-webkit-text-fill-color:#fff;vertical-align:middle}
+.warn{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--ac3);border-radius:12px;padding:10px 14px;margin:14px 0;color:var(--mut);backdrop-filter:blur(8px)}
+section{background:var(--card);border:1px solid var(--bd);border-top:4px solid transparent;border-image:linear-gradient(90deg,var(--ac),var(--ac2),var(--ac3)) 1;border-radius:0;padding:18px;margin:18px 0;backdrop-filter:blur(8px);box-shadow:0 10px 30px #7c3aed1f}
+label{display:block;color:var(--mut);font-size:13px;margin:12px 0 4px}
+input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit}
+input:focus{outline:2px solid var(--ac);border-color:transparent}
+button{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s}
+button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 18px #7c3aed55}
+button.sec{background:linear-gradient(90deg,var(--ac3),#f59e0b)}button:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.item{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;align-items:center;border:1px solid var(--bd);border-radius:14px;padding:12px;cursor:pointer;word-break:break-all;background:var(--card);transition:transform .15s,border-color .15s}
+.item:hover{transform:translateY(-2px);border-color:var(--ac)}
+.av{grid-row:span 3;width:44px;height:44px;border-radius:50%;box-shadow:0 4px 12px #0003}
+.chip{justify-self:start;font-size:11px;font-weight:700;border-radius:99px;padding:1px 9px;color:#fff;background:#64748b}
+.chip.ACTIVE{background:#059669}.chip.PENDING{background:#f59e0b}.chip.MIGRATED{background:#7c3aed}.chip.MIGRATION_READY{background:#0891b2}.chip.FLAGGED{background:#e11d48}
+.mut{color:var(--mut);font-size:13px}
+#msg{min-height:22px;margin-top:12px;white-space:pre-wrap;word-break:break-word}
+.ok{color:var(--ok)}.er{color:var(--er)}a{color:var(--ac)}
+</style>
+</head>
+<body><main>
+<header><h1>Ammora Showcase<span class="badge">GIWA Sepolia testnet</span></h1>
+<div><span id="acct" class="mut"></span> <button id="connect">Connect wallet</button></div></header>
+<div class="warn">Testnet demo built with the public Ammora SDK. Test tokens only. Never enter a private key or seed phrase here: the site only asks your wallet app to sign.</div>
+
+<section><h2>Launches</h2><div id="launches" class="grid"><span class="mut">Loading...</span></div>
+<div class="mut" style="margin-top:8px">Click a launch to use it as the token to receive.</div></section>
+
+<section><h2>Swap</h2>
+<label>You pay (token address)</label><input id="tin">
+<label>You receive (token address)</label><input id="tout">
+<label>Amount (human units, e.g. 0.01)</label><input id="amt" inputmode="decimal" value="0.01">
+<label>Max slippage (%)</label><input id="slip" inputmode="decimal" value="1">
+<div class="row"><button id="quote">Get quote</button><button id="swap" class="sec" disabled>Swap (needs wallet)</button></div>
+<div id="msg"></div></section>
+</main><script type="module" src="/src/main.js"></script></body></html>
