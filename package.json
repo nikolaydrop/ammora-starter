@@ -1,0 +1,15 @@
+{
+  "name": "ammora-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only starter for experimenting with the Ammora SDK on GIWA Sepolia testnet",
+  "scripts": {
+    "check": "node src/check.mjs",
+    "quote": "node src/quote.mjs"
+  },
+  "dependencies": {
+    "@ammora-protocol/sdk": "0.2.13",
+    "viem": "2.58.4"
+  }
+}
