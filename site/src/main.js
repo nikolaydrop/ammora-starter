@@ -14,11 +14,11 @@ const $ = (id) => document.getElementById(id);
 const eth = window.ethereum;
 let account = null, wallet = null;
 
-/* ===== МОНЕТЫ: чтобы добавить новую, допиши одну строку ===== */
+/* ===== TOKENS: add a new one with a single line ===== */
 const TOKENS = [
   { symbol: "WETH", icon: "🔷", address: TAMM_GIWA_SEPOLIA_WETH },
   { symbol: "tAMM", icon: "🪙", address: TAMM_MANAGED_ADDRESS },
-  { symbol: "Свой токен", icon: "➕", address: "custom" },
+  { symbol: "Custom token", icon: "➕", address: "custom" },
 ];
 
 const msg = (t, cls = "") => { const m = $("msg"); m.textContent = t; m.className = `status ${cls}`; };
@@ -42,7 +42,7 @@ for (const [s, idx] of [["From", 0], ["To", 1]]) {
     try {
       const [n, sy] = await Promise.all(["name", "symbol"].map((f) => pub.readContract({ address: a, abi: erc20Abi, functionName: f })));
       info.textContent = `${n} (${sy})`;
-    } catch { info.textContent = "Не удалось прочитать токен: проверьте адрес"; }
+    } catch { info.textContent = "Could not read token: check the address"; }
   };
 }
 
@@ -58,7 +58,7 @@ async function loadLaunches() {
   try {
     const { items } = await new AmmoraDataApiClient(DATA_API).getLaunches({ chainId: BigInt(CHAIN_ID) });
     box.replaceChildren();
-    if (!items.length) { box.textContent = "Запусков пока нет."; return; }
+    if (!items.length) { box.textContent = "No launches yet."; return; }
     for (const l of items.slice(0, 24)) {
       const d = document.createElement("div"); d.className = "item";
       const av = document.createElement("div"); av.className = "av";
@@ -66,18 +66,18 @@ async function loadLaunches() {
       av.style.background = `linear-gradient(135deg,hsl(${h} 85% 60%),hsl(${(h + 70) % 360} 85% 55%))`;
       const a = document.createElement("div"); a.textContent = short(l.address); a.style.fontWeight = "600";
       const c = document.createElement("span"); c.className = `chip ${/^[A-Z_]+$/.test(l.status) ? l.status : ""}`; c.textContent = l.status;
-      const s = document.createElement("div"); s.className = "mut"; s.textContent = `блок ${l.createdBlock}`;
+      const s = document.createElement("div"); s.className = "mut"; s.textContent = `block ${l.createdBlock}`;
       const k = document.createElement("a"); k.textContent = "explorer"; k.target = "_blank"; k.rel = "noopener";
       k.href = explorer(`token/${l.address}`); k.onclick = (e) => e.stopPropagation();
       d.append(av, a, c, s, k);
       d.onclick = () => {
         const t = ui("To"); t.sel.selectedIndex = TOKENS.findIndex((x) => x.address === "custom");
         t.sel.onchange(); t.addr.value = l.address; t.addr.oninput();
-        msg(`Выбран токен ${short(l.address)}`); $("swapcard").scrollIntoView({ behavior: "smooth" });
+        msg(`Token selected ${short(l.address)}`); $("swapcard").scrollIntoView({ behavior: "smooth" });
       };
       box.append(d);
     }
-  } catch (e) { box.textContent = `Не удалось загрузить запуски (${e?.message ?? e}). Data API может блокировать запросы из браузера.`; }
+  } catch (e) { box.textContent = `Could not load launches (${e?.message ?? e}). The Data API may block browser requests.`; }
 }
 
 async function ensureChain() {
@@ -92,50 +92,50 @@ async function ensureChain() {
 
 $("connect").onclick = async () => {
   try {
-    if (!eth) return msg("Кошелёк не найден. Установите MetaMask или другой кошелёк для браузера.", "er");
+    if (!eth) return msg("No wallet found. Install MetaMask or another browser wallet.", "er");
     [account] = await eth.request({ method: "eth_requestAccounts" });
     await ensureChain();
     wallet = createWalletClient({ account, chain, transport: custom(eth) });
-    $("connect").textContent = short(account); $("swap").disabled = false; $("swap").textContent = "Обменять";
-    msg("Кошелёк подключён к GIWA Sepolia.", "ok");
-  } catch (e) { msg(`Ошибка кошелька: ${e?.shortMessage ?? e?.message ?? e}`, "er"); }
+    $("connect").textContent = short(account); $("swap").disabled = false; $("swap").textContent = "Swap";
+    msg("Wallet connected to GIWA Sepolia.", "ok");
+  } catch (e) { msg(`Wallet error: ${e?.shortMessage ?? e?.message ?? e}`, "er"); }
 };
 
 function readForm() {
   const tin = addrOf("From"), tout = addrOf("To");
-  if (!isAddress(tin) || !isAddress(tout)) throw new Error("Введите два корректных адреса токенов.");
+  if (!isAddress(tin) || !isAddress(tout)) throw new Error("Enter two valid token addresses.");
   const slip = Number($("slip").value);
-  if (!(slip > 0 && slip <= 50)) throw new Error("Проскальзывание должно быть от 0 до 50 процентов.");
+  if (!(slip > 0 && slip <= 50)) throw new Error("Slippage must be between 0 and 50 percent.");
   return { tin, tout, slippageBps: Math.round(slip * 100) };
 }
 
 $("quote").onclick = async () => {
   try {
-    msg("Получаю котировку...");
+    msg("Getting quote...");
     const { tin, tout, slippageBps } = readForm();
     const [dIn, dOut] = await Promise.all([decimalsOf(tin), decimalsOf(tout)]);
     const amountIn = parseUnits($("amt").value.trim(), dIn);
     const routes = await makeRoutes();
     const q = await routes.quoteExactIn({ tokenIn: tin, tokenOut: tout, amountIn, slippageBps, recipient: account ?? undefined });
     $("amountTo").value = formatUnits(q.expectedAmountOut, dOut);
-    msg(`Минимум: ${formatUnits(q.minimumAmountOut, dOut)}\nВлияние на цену: ${q.priceImpactBps ?? "н/д"} bps\nШагов маршрута: ${q.hops.length}`, "ok");
-  } catch (e) { msg(`Котировка не получена: ${e?.shortMessage ?? e?.message ?? e}`, "er"); }
+    msg(`Minimum: ${formatUnits(q.minimumAmountOut, dOut)}\nPrice impact: ${q.priceImpactBps ?? "n/a"} bps\nRoute hops: ${q.hops.length}`, "ok");
+  } catch (e) { msg(`Quote failed: ${e?.shortMessage ?? e?.message ?? e}`, "er"); }
 };
 
 $("swap").onclick = async () => {
   try {
-    if (!wallet) return msg("Сначала подключите кошелёк.", "er");
+    if (!wallet) return msg("Connect a wallet first.", "er");
     const { tin, tout, slippageBps } = readForm();
     const dIn = await decimalsOf(tin), dOut = await decimalsOf(tout);
     const amountIn = parseUnits($("amt").value.trim(), dIn);
     await ensureChain();
     const routes = await makeRoutes(wallet);
     const q = await routes.quoteExactIn({ tokenIn: tin, tokenOut: tout, amountIn, slippageBps, recipient: account });
-    if (!confirm(`Обменять ${$("amt").value} (${short(tin)}) минимум на ${formatUnits(q.minimumAmountOut, dOut)} (${short(tout)}) в ТЕСТОВОЙ сети GIWA Sepolia?`)) return;
+    if (!confirm(`Swap ${$("amt").value} (${short(tin)}) for at least ${formatUnits(q.minimumAmountOut, dOut)} (${short(tout)}) on GIWA Sepolia TESTNET?`)) return;
     const prepared = await routes.prepareExactIn(q, { payer: account, recipient: account });
-    const res = await routes.execute(prepared, { sendApprovals: true, exactApproval: true, simulate: true, onStatus: (s) => msg(`Статус: ${JSON.stringify(s)}`) });
-    msg(`Готово. Транзакция: ${res.hash}\n${explorer(`tx/${res.hash}`)}`, "ok");
-  } catch (e) { msg(`Обмен не выполнен: ${e?.shortMessage ?? e?.message ?? e}`, "er"); }
+    const res = await routes.execute(prepared, { sendApprovals: true, exactApproval: true, simulate: true, onStatus: (s) => msg(`Status: ${JSON.stringify(s)}`) });
+    msg(`Done. Tx: ${res.hash}\n${explorer(`tx/${res.hash}`)}`, "ok");
+  } catch (e) { msg(`Swap failed: ${e?.shortMessage ?? e?.message ?? e}`, "er"); }
 };
 
 loadLaunches();

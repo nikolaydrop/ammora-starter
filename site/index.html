@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OctoSwap</title>
 <link rel="icon" href="octopus.jpg">
 <style>
-  /* ===== ЦВЕТА: меняй только здесь ===== */
+  /* ===== COLORS: edit here only ===== */
   :root{--bg-top:#ffc8e3;--bg-bottom:#c4e3ff;--card:#fff;--field:#eeeaf4;--text:#3a2a5e;--muted:#8a7fa3;--accent:#1fc7d4;--accent-dark:#17a3ae;--purple:#7645d9;--err:#e11d48;--ok:#0f9d6b;--shadow:0 12px 40px rgba(118,69,217,.18)}
   *{box-sizing:border-box}
   body{margin:0;min-height:100vh;color:var(--text);font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom)) fixed}
@@ -57,30 +57,99 @@
 <body>
 <header>
   <div class="brand"><img class="logo" src="octopus.jpg" alt="OctoSwap">
-    <div><b>OctoSwap</b><small>работает на <img src="ammora.jpg" alt="Ammora"></small></div></div>
-  <nav><a href="#swapcard">Обмен</a><a href="#launches-sec">Запуски</a></nav>
-  <button class="wallet" id="connect">Подключить кошелёк</button>
+    <div><b>OctoSwap</b><small>powered by <img src="ammora.jpg" alt="Ammora"></small></div></div>
+  <nav><a href="#swapcard">Swap</a><a href="#launches-sec">Launches</a></nav>
+  <button class="wallet" id="connect">Connect wallet</button>
 </header>
 <main>
   <div class="card" id="swapcard">
-    <img class="mascot" src="octopus.jpg" alt="Осьминожек">
-    <h1>Обмен</h1><p class="sub">Тестовая сеть GIWA Sepolia. Только тестовые токены.</p>
-    <div class="box"><label>Отдаёте</label>
+    <img class="mascot" src="octopus.jpg" alt="Octopus mascot">
+    <h1>Swap</h1><p class="sub">GIWA Sepolia testnet. Test tokens only.</p>
+    <div class="box"><label>You pay</label>
       <div class="row"><input id="amt" inputmode="decimal" placeholder="0.0" value="0.01"><select id="tokenFrom"></select></div>
-      <div class="custom" id="customFrom"><input id="addrFrom" placeholder="Адрес смарт-контракта 0x..."><div class="tokeninfo" id="infoFrom"></div></div></div>
-    <button class="flip" id="flip" title="Поменять местами">⇅</button>
-    <div class="box"><label>Получаете</label>
+      <div class="custom" id="customFrom"><input id="addrFrom" placeholder="Token contract address 0x..."><div class="tokeninfo" id="infoFrom"></div></div></div>
+    <button class="flip" id="flip" title="Switch tokens">⇅</button>
+    <div class="box"><label>You receive</label>
       <div class="row"><input id="amountTo" placeholder="0.0" readonly><select id="tokenTo"></select></div>
-      <div class="custom" id="customTo"><input id="addrTo" placeholder="Адрес смарт-контракта 0x..."><div class="tokeninfo" id="infoTo"></div></div></div>
-    <div class="slip"><span>Проскальзывание, %</span><input id="slip" inputmode="decimal" value="1"></div>
-    <div class="btns"><button class="ghost" id="quote">Получить котировку</button>
-      <button class="swap" id="swap" disabled>Подключите кошелёк</button></div>
+      <div class="custom" id="customTo"><input id="addrTo" placeholder="Token contract address 0x..."><div class="tokeninfo" id="infoTo"></div></div></div>
+    <div class="slip"><span>Slippage, %</span><input id="slip" inputmode="decimal" value="1"></div>
+    <div class="btns"><button class="ghost" id="quote">Get quote</button>
+      <button class="swap" id="swap" disabled>Connect wallet to swap</button></div>
     <div class="status" id="msg"></div>
   </div>
-  <div class="launches" id="launches-sec"><h2>Запуски</h2><div class="grid" id="launches">Загрузка...</div>
-    <div class="mut" style="margin-top:8px">Нажмите на запуск, чтобы выбрать его токен в поле «Получаете».</div></div>
-  <div class="partner">Партнёр: <img src="ammora.jpg" alt="Ammora"></div>
+  <div class="launches" id="launches-sec"><h2>Launches</h2><div class="grid" id="launches">Loading...</div>
+    <div class="mut" style="margin-top:8px">Click a launch to pick its token in the “You receive” field.</div></div>
+  <div class="partner">Partner: <img src="ammora.jpg" alt="Ammora"></div>
 </main>
 <script type="module" src="/src/main.js"></script>
+<!-- ===== UNDERWATER WORLD ON THE SIDES ===== -->
+<style>
+  header, main { position: relative; z-index: 1; }
+  .sea { position: fixed; top: 0; bottom: 0; width: clamp(90px, 14vw, 220px);
+    pointer-events: none; overflow: hidden; z-index: 0; }
+  .sea.left { left: 0; } .sea.right { right: 0; }
+  /* лучи света */
+  .sea::before { content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(105deg, rgba(255,255,255,.22) 0 14px, transparent 14px 46px);
+    -webkit-mask-image: linear-gradient(180deg, #000, transparent 70%);
+            mask-image: linear-gradient(180deg, #000, transparent 70%);
+    animation: rays 8s ease-in-out infinite alternate; }
+  @keyframes rays { to { opacity: .45; } }
+  /* водоросли */
+  .weed { position: absolute; bottom: -4px; width: 46px; height: 190px; transform-origin: 50% 100%;
+    animation: sway 4s ease-in-out infinite alternate; }
+  @keyframes sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+  /* пузырьки */
+  .bubble { position: absolute; bottom: -30px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.25));
+    border: 1px solid rgba(255,255,255,.7); animation: rise linear infinite; }
+  @keyframes rise { to { transform: translateY(-110vh) translateX(14px); } }
+  /* рыбки */
+  .fish { position: absolute; width: 56px; animation: swim ease-in-out infinite alternate; }
+  @keyframes swim { from { transform: translateX(0) translateY(0); }
+                    to   { transform: translateX(var(--dx)) translateY(-18px); } }
+  @media (max-width: 900px) { .sea { display: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="weedShape"><path d="M23 190 C5 150 40 120 23 80 C8 50 30 25 23 0" fill="none" stroke="#2fc9a6" stroke-width="12" stroke-linecap="round"/>
+      <path d="M23 190 C40 160 10 130 30 100" fill="none" stroke="#7be3c8" stroke-width="7" stroke-linecap="round"/></g>
+    <g id="fishShape"><ellipse cx="22" cy="20" rx="20" ry="13" fill="currentColor"/>
+      <path d="M40 20 L58 6 L58 34 Z" fill="currentColor"/><circle cx="12" cy="16" r="3.2" fill="#fff"/><circle cx="11" cy="16" r="1.5" fill="#2a1a4e"/></g>
+  </defs>
+</svg>
+
+<div class="sea left" id="seaLeft"></div>
+<div class="sea right" id="seaRight"></div>
+
+<script>
+(function () {
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const FISH_COLORS = ["#ff8fc2", "#ffb84d", "#7645d9", "#1fc7d4"];
+  function build(el, mirror) {
+    // водоросли
+    [8, 52, 96].forEach((x, i) => {
+      el.insertAdjacentHTML("beforeend",
+        `<svg class="weed" viewBox="0 0 46 190" style="left:${x}px;height:${150 + i * 25}px;animation-delay:${i * .7}s"><use href="#weedShape"/></svg>`);
+    });
+    // пузырьки
+    for (let i = 0; i < 9; i++) {
+      const s = rnd(8, 22), b = document.createElement("div");
+      b.className = "bubble";
+      b.style.cssText = `width:${s}px;height:${s}px;left:${rnd(5, 85)}%;animation-duration:${rnd(9, 18)}s;animation-delay:${rnd(0, 12)}s`;
+      el.appendChild(b);
+    }
+    // рыбки
+    for (let i = 0; i < 3; i++) {
+      el.insertAdjacentHTML("beforeend",
+        `<svg class="fish" viewBox="0 0 60 40" style="color:${FISH_COLORS[(i + (mirror ? 2 : 0)) % 4]};top:${25 + i * 22}%;left:${rnd(5, 40)}%;
+          --dx:${rnd(25, 60)}px;animation-duration:${rnd(5, 9)}s;${mirror ? "" : "transform:scaleX(-1);"}"><use href="#fishShape"/></svg>`);
+    }
+  }
+  build(document.getElementById("seaLeft"), false);
+  build(document.getElementById("seaRight"), true);
+})();
+</script>
 </body>
 </html>
