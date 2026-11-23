@@ -82,7 +82,7 @@
   <div class="partner">Partner: <img src="ammora.jpg" alt="Ammora"></div>
 </main>
 <script type="module" src="/src/main.js"></script>
-<!-- ===== UNDERWATER WORLD ON THE SIDES ===== -->
+<!-- ===== ПОДВОДНЫЙ МИР ПО БОКАМ: вставь целиком перед </body> в index.html ===== -->
 <style>
   header, main { position: relative; z-index: 1; }
   .sea { position: fixed; top: 0; bottom: 0; width: clamp(90px, 14vw, 220px);
@@ -105,10 +105,23 @@
     border: 1px solid rgba(255,255,255,.7); animation: rise linear infinite; }
   @keyframes rise { to { transform: translateY(-110vh) translateX(14px); } }
   /* рыбки */
-  .fish { position: absolute; width: 56px; animation: swim ease-in-out infinite alternate; }
-  @keyframes swim { from { transform: translateX(0) translateY(0); }
-                    to   { transform: translateX(var(--dx)) translateY(-18px); } }
-  @media (max-width: 900px) { .sea { display: none; } }
+  .fish { position: absolute; width: 56px; height: 38px; left: 0;
+    animation: swimX ease-in-out infinite alternate, bobY 3s ease-in-out infinite alternate; }
+  .fish svg { width: 100%; height: 100%; display: block; }
+  @keyframes swimX { from { left: 0; } to { left: calc(100% - 56px); } }
+  @keyframes bobY { from { transform: translateY(0); } to { transform: translateY(-14px); } }
+  /* рыбка разворачивается в конце каждого заплыва (на картинке она смотрит влево) */
+  @keyframes flipToRight { 0%, 49.9% { transform: scaleX(-1); } 50%, 100% { transform: scaleX(1); } }
+  @keyframes flipToLeft  { 0%, 49.9% { transform: scaleX(1); } 50%, 100% { transform: scaleX(-1); } }
+  /* ракушка с жемчужиной: стоит внизу справа, между водорослями и центром */
+  .shell { position: fixed; bottom: 6px; right: calc(clamp(90px, 14vw, 220px) + 10px);
+    width: clamp(110px, 11vw, 170px); pointer-events: none; z-index: 0; }
+  .shell svg { width: 100%; display: block; overflow: visible; }
+  .shell .lid { transform-origin: 100px 98px; animation: lid 5s ease-in-out infinite alternate; }
+  @keyframes lid { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+  .shell .glint { transform-origin: 100px 92px; animation: twinkle 2.4s ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.1); } }
+  @media (max-width: 900px) { .sea, .shell { display: none; } }
 </style>
 
 <svg width="0" height="0" style="position:absolute">
@@ -122,6 +135,33 @@
 
 <div class="sea left" id="seaLeft"></div>
 <div class="sea right" id="seaRight"></div>
+
+<!-- Ракушка с жемчужиной -->
+<div class="shell">
+  <svg viewBox="0 0 200 170" aria-hidden="true">
+    <defs>
+      <radialGradient id="pearlGrad" cx="35%" cy="30%" r="75%">
+        <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ece6ff"/><stop offset="1" stop-color="#b9a6f0"/>
+      </radialGradient>
+    </defs>
+    <g stroke="#6b3fa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <!-- верхняя створка (слегка покачивается) -->
+      <g class="lid">
+        <path d="M22 98 Q8 22 100 12 Q192 22 178 98 Q100 76 22 98 Z" fill="#ffc7e1"/>
+        <path d="M100 98 L100 16 M100 98 L56 28 M100 98 L144 28 M100 98 L28 74 M100 98 L172 74" fill="none" stroke-width="3" opacity=".55"/>
+      </g>
+      <!-- нижняя створка -->
+      <path d="M14 96 Q20 164 100 166 Q180 164 186 96 Q100 116 14 96 Z" fill="#f7a8cc"/>
+      <path d="M100 160 L100 112 M100 160 L58 108 M100 160 L142 108 M100 160 L30 104 M100 160 L170 104" fill="none" stroke-width="3" opacity=".5"/>
+      <!-- внутренность -->
+      <ellipse cx="100" cy="98" rx="80" ry="15" fill="#ffeaf4"/>
+    </g>
+    <!-- жемчужина -->
+    <circle cx="100" cy="88" r="23" fill="url(#pearlGrad)" stroke="#6b3fa0" stroke-width="3.5"/>
+    <circle cx="91" cy="79" r="6" fill="#fff" opacity=".9"/>
+    <path class="glint" d="M128 62 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#fff"/>
+  </svg>
+</div>
 
 <script>
 (function () {
@@ -141,10 +181,15 @@
       el.appendChild(b);
     }
     // рыбки
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
+      const goRight = (i + (mirror ? 1 : 0)) % 2 === 0;   // часть рыбок плывёт вправо, часть влево
+      const d = rnd(6, 11), t = -rnd(0, d * 2);           // d: время одного заплыва, t: сдвиг, чтобы плыли вразнобой
       el.insertAdjacentHTML("beforeend",
-        `<svg class="fish" viewBox="0 0 60 40" style="color:${FISH_COLORS[(i + (mirror ? 2 : 0)) % 4]};top:${25 + i * 22}%;left:${rnd(5, 40)}%;
-          --dx:${rnd(25, 60)}px;animation-duration:${rnd(5, 9)}s;${mirror ? "" : "transform:scaleX(-1);"}"><use href="#fishShape"/></svg>`);
+        `<div class="fish" style="top:${14 + i * 19}%;animation-duration:${d}s,${rnd(2.5, 4)}s;
+          animation-direction:${goRight ? "alternate" : "alternate-reverse"},alternate;animation-delay:${t}s,${t}s">
+          <svg viewBox="0 0 60 40" style="color:${FISH_COLORS[(i + (mirror ? 2 : 0)) % 4]};
+            animation:${goRight ? "flipToRight" : "flipToLeft"} ${d * 2}s steps(1,end) infinite;animation-delay:${t}s">
+            <use href="#fishShape"/></svg></div>`);
     }
   }
   build(document.getElementById("seaLeft"), false);
