@@ -18,32 +18,32 @@
   nav{display:flex;gap:22px;font-weight:600}nav a{color:var(--purple);text-decoration:none}
   button{font:inherit;cursor:pointer;border:0}
   .wallet{background:var(--purple);color:#fff;padding:10px 18px;border-radius:16px;font-weight:600}
-  main{max-width:440px;margin:70px auto 30px;padding:0 16px}
-  .card{position:relative;background:var(--card);border-radius:32px;padding:22px;box-shadow:var(--shadow)}
-  .mascot{position:absolute;top:-62px;right:22px;width:95px;height:95px;border-radius:50%;object-fit:cover;object-position:50% 62%;border:4px solid var(--card);box-shadow:var(--shadow);animation:bob 3s ease-in-out infinite}
+  main{max-width:clamp(440px,46vw,680px);margin:100px auto 40px;padding:0 16px}
+  .card{position:relative;background:var(--card);border-radius:40px;padding:32px;box-shadow:var(--shadow)}
+  .mascot{position:absolute;top:-80px;right:28px;width:124px;height:124px;border-radius:50%;object-fit:cover;object-position:50% 62%;border:4px solid var(--card);box-shadow:var(--shadow);animation:bob 3s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-6px) rotate(3deg)}}
-  h1{margin:0 0 2px;font-size:22px}h2{margin:0 0 12px;font-size:18px}
-  .sub{margin:0 0 16px;color:var(--muted);font-size:14px}
-  .box{background:var(--field);border-radius:20px;padding:14px;margin-bottom:6px}
-  .box label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase}
-  .row{display:flex;gap:10px;align-items:center;margin-top:8px}
-  .row input{flex:1;min-width:0;background:none;border:0;outline:0;font:600 24px inherit;font-family:inherit;color:var(--text)}
-  select{background:#fff;border:0;border-radius:14px;padding:10px 12px;font:600 15px inherit;font-family:inherit;color:var(--text)}
+  h1{margin:0 0 4px;font-size:32px}h2{margin:0 0 14px;font-size:22px}
+  .sub{margin:0 0 24px;color:var(--muted);font-size:16px}
+  .box{background:var(--field);border-radius:26px;padding:22px;margin-bottom:6px}
+  .box label{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase}
+  .row{display:flex;gap:12px;align-items:center;margin-top:12px}
+  .row input{flex:1;min-width:0;background:none;border:0;outline:0;font-weight:600;font-size:36px;font-family:inherit;color:var(--text)}
+  select{background:#fff;border:0;border-radius:18px;padding:14px 16px;font-weight:600;font-size:19px;font-family:inherit;color:var(--text)}
   .custom{display:none;margin-top:10px}.custom.show{display:block}
-  .custom input{width:100%;border:2px solid transparent;background:#fff;border-radius:14px;padding:10px 12px;font:14px monospace;color:var(--text);outline:0}
+  .custom input{width:100%;border:2px solid transparent;background:#fff;border-radius:14px;padding:14px 16px;font:15px monospace;color:var(--text);outline:0}
   .custom input:focus{border-color:var(--accent)}
   .tokeninfo{margin-top:6px;font-size:13px;font-weight:600;color:var(--purple);min-height:18px}
-  .flip{display:block;margin:-4px auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-size:18px;position:relative;z-index:1}
-  .slip{display:flex;justify-content:space-between;align-items:center;padding:6px 6px 0;color:var(--muted);font-size:13px}
-  .slip input{width:70px;border:0;border-radius:10px;padding:6px 8px;background:var(--field);color:var(--text);font:600 14px inherit;font-family:inherit;text-align:right;outline:0}
-  .btns{display:grid;gap:10px;margin-top:14px}
-  .swap{width:100%;padding:16px;border-radius:20px;font-size:17px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--accent),#5ee0c7);box-shadow:0 4px 0 var(--accent-dark);transition:transform .15s,box-shadow .15s}
+  .flip{display:block;margin:-8px auto;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-size:24px;box-shadow:0 4px 14px rgba(31,199,212,.45);position:relative;z-index:1}
+  .slip{display:flex;justify-content:space-between;align-items:center;padding:10px 8px 0;color:var(--muted);font-size:16px}
+  .slip input{width:90px;border:0;border-radius:14px;padding:10px 12px;background:var(--field);color:var(--text);font-weight:600;font-size:17px;font-family:inherit;text-align:right;outline:0}
+  .btns{display:grid;gap:14px;margin-top:20px}
+  .swap{width:100%;padding:22px;border-radius:26px;font-size:21px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--accent),#5ee0c7);box-shadow:0 4px 0 var(--accent-dark);transition:transform .15s,box-shadow .15s}
   .swap:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 var(--accent-dark),0 0 22px rgba(31,199,212,.55)}
   .swap:disabled{opacity:.55;cursor:default}
-  .ghost{width:100%;padding:13px;border-radius:20px;font-weight:700;color:var(--purple);background:var(--field)}
-  .status{text-align:center;font-size:13px;color:var(--muted);margin-top:10px;min-height:18px;white-space:pre-wrap;word-break:break-word}
+  .ghost{width:100%;padding:18px;border-radius:26px;font-size:18px;font-weight:700;color:var(--purple);background:var(--field)}
+  .status{text-align:center;font-size:16px;color:var(--muted);margin-top:14px;min-height:22px;white-space:pre-wrap;word-break:break-word}
   .status.ok{color:var(--ok)}.status.er{color:var(--err)}.status a{color:var(--purple)}
-  .launches{background:var(--card);border-radius:28px;padding:20px;margin-top:22px;box-shadow:var(--shadow)}
+  .launches{background:var(--card);border-radius:34px;padding:28px;margin-top:28px;box-shadow:var(--shadow)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;font-size:14px;color:var(--muted)}
   .item{display:grid;grid-template-columns:40px 1fr;gap:2px 10px;align-items:center;border-radius:16px;padding:10px;cursor:pointer;background:var(--field);word-break:break-all;color:var(--text)}
   .item:hover{outline:2px solid var(--accent)}.av{grid-row:span 3;width:40px;height:40px;border-radius:50%}
@@ -64,7 +64,7 @@
 <main>
   <div class="card" id="swapcard">
     <img class="mascot" src="octopus.jpg" alt="Octopus mascot">
-    <h1>Swap</h1><p class="sub">GIWA Sepolia testnet. Test tokens only.</p>
+    <h1>Swap</h1><p class="sub">GIWA Sepolia testnet. Test tokens only. The price updates as you type, no wallet needed.</p>
     <div class="box"><label>You pay</label>
       <div class="row"><input id="amt" inputmode="decimal" placeholder="0.0" value="0.01"><select id="tokenFrom"></select></div>
       <div class="custom" id="customFrom"><input id="addrFrom" placeholder="Token contract address 0x..."><div class="tokeninfo" id="infoFrom"></div></div></div>
