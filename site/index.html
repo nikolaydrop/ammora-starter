@@ -2,129 +2,167 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OctoSwap</title>
-<link rel="icon" href="octopus.jpg">
+<meta name="description" content="Swap tokens on the GIWA Sepolia testnet. Powered by the Ammora SDK.">
+<meta name="theme-color" content="#ffc8e3">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Open Graph / Twitter preview (absolute URLs are required by social networks) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OctoSwap">
+<meta property="og:title" content="OctoSwap">
+<meta property="og:description" content="Swap tokens on the GIWA Sepolia testnet. Powered by the Ammora SDK.">
+<meta property="og:url" content="https://nikolaydrop.github.io/ammora-starter/">
+<meta property="og:image" content="https://nikolaydrop.github.io/ammora-starter/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OctoSwap octopus mascot juggling coins">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OctoSwap">
+<meta name="twitter:description" content="Swap tokens on the GIWA Sepolia testnet. Powered by the Ammora SDK.">
+<meta name="twitter:image" content="https://nikolaydrop.github.io/ammora-starter/og-image.png">
+<meta name="twitter:image:alt" content="OctoSwap octopus mascot juggling coins">
 <style>
   /* ===== COLORS: edit here only ===== */
-  :root{--bg-top:#ffc8e3;--bg-bottom:#c4e3ff;--card:#fff;--field:#eeeaf4;--text:#3a2a5e;--muted:#8a7fa3;--accent:#1fc7d4;--accent-dark:#17a3ae;--purple:#7645d9;--err:#e11d48;--ok:#0f9d6b;--shadow:0 12px 40px rgba(118,69,217,.18)}
+  :root{--bg-top:#ffc8e3;--bg-bottom:#c4e3ff;--card:#fff;--field:#eeeaf4;--text:#3a2a5e;--muted:#54487a;--accent:#1fc7d4;--accent-dark:#17a3ae;--purple:#7645d9;--err:#d11a4a;--ok:#0b7d57;--shadow:0 12px 40px rgba(118,69,217,.18);--floor:clamp(64px,11vh,110px)}
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;color:var(--text);font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom)) fixed}
-  header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;background:rgba(255,255,255,.65);backdrop-filter:blur(10px)}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand img.logo{width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:50% 62%}
-  .brand b{font-size:20px;display:block;line-height:1.1}
+  [hidden]{display:none!important}
+  html{min-height:100%}
+  body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;color:var(--text);font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom)) fixed;padding-bottom:calc(var(--floor) + 18px)}
+  header{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:rgba(255,255,255,.65);backdrop-filter:blur(10px)}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .brand img.logo{width:42px;height:42px;border-radius:50%;object-fit:cover;object-position:50% 62%;flex:none}
+  .brand b{font-size:19px;display:block;line-height:1.1}
   .brand small{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:5px}.brand small img{height:12px}
-  nav{display:flex;gap:22px;font-weight:600}nav a{color:var(--purple);text-decoration:none}
+  nav{display:none;gap:22px;font-weight:600}nav a{color:var(--purple);text-decoration:none}
   button{font:inherit;cursor:pointer;border:0}
-  .wallet{background:var(--purple);color:#fff;padding:10px 18px;border-radius:16px;font-weight:600}
-  main{max-width:clamp(440px,46vw,680px);margin:100px auto 40px;padding:0 16px}
-  .card{position:relative;background:var(--card);border-radius:40px;padding:32px;box-shadow:var(--shadow)}
-  .mascot{position:absolute;top:-80px;right:28px;width:124px;height:124px;border-radius:50%;object-fit:cover;object-position:50% 62%;border:4px solid var(--card);box-shadow:var(--shadow);animation:bob 3s ease-in-out infinite}
+  .wallet{background:var(--purple);color:#fff;padding:10px 14px;border-radius:16px;font-weight:600;font-size:14px;white-space:nowrap}
+  main{position:relative;z-index:1;flex:1;width:100%;max-width:clamp(420px,46vw,680px);margin:clamp(96px,15vh,170px) auto 26px;padding:0 14px}
+  .card{position:relative;background:var(--card);border-radius:clamp(28px,6vw,40px);padding:clamp(18px,4.5vw,32px);box-shadow:var(--shadow)}
+  .mascot{--m:clamp(88px,22vw,124px);position:absolute;top:calc(var(--m)*-.64);right:20px;width:var(--m);height:var(--m);border-radius:50%;object-fit:cover;object-position:50% 62%;border:4px solid var(--card);box-shadow:var(--shadow);animation:bob 3s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-6px) rotate(3deg)}}
-  h1{margin:0 0 4px;font-size:32px}h2{margin:0 0 14px;font-size:22px}
-  .sub{margin:0 0 24px;color:var(--muted);font-size:16px}
-  .box{background:var(--field);border-radius:26px;padding:22px;margin-bottom:6px}
-  .box label{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase}
-  .row{display:flex;gap:12px;align-items:center;margin-top:12px}
-  .row input{flex:1;min-width:0;background:none;border:0;outline:0;font-weight:600;font-size:36px;font-family:inherit;color:var(--text)}
-  select{background:#fff;border:0;border-radius:18px;padding:14px 16px;font-weight:600;font-size:19px;font-family:inherit;color:var(--text)}
+  h1{margin:0 0 4px;font-size:clamp(26px,7vw,32px)}h2{margin:0 0 14px;font-size:clamp(19px,5vw,22px)}
+  .sub{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.45}
+  .box{background:var(--field);border-radius:clamp(20px,5vw,26px);padding:clamp(14px,3.6vw,22px);margin-bottom:6px}
+  .box label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .row{display:flex;gap:10px;align-items:center;margin-top:10px}
+  .row>input{flex:1;min-width:0;background:none;border:0;outline:0;font-weight:600;font-size:clamp(26px,7.4vw,36px);font-family:inherit;color:var(--text)}
+  .row>input::placeholder{color:#8a7fa3}
+  .picker{position:relative;flex:none}
+  .pickbtn{display:flex;align-items:center;gap:8px;background:#fff;color:var(--text);border-radius:18px;padding:10px 12px;font-weight:700;font-size:clamp(15px,4.2vw,18px);box-shadow:0 2px 8px rgba(118,69,217,.12)}
+  .pickbtn:focus-visible,.opt:focus-visible,.sbtn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .ti{font-size:1.15em;line-height:1}.chev{font-size:.8em;color:var(--muted)}
+  .menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;margin:0;padding:6px;list-style:none;width:min(310px,calc(100vw - 52px));max-height:min(56vh,340px);overflow:auto;background:#fff;border-radius:20px;box-shadow:0 14px 40px rgba(58,42,94,.28)}
+  .opt{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;cursor:pointer}
+  .opt:hover{background:var(--field)}.opt .ti{font-size:1.5em;width:1.4em;text-align:center}
+  .opt .tm{display:flex;flex-direction:column;min-width:0}.opt b{font-size:16px}.opt small{color:var(--muted);font-size:13px}
+  .opt:last-child{border-top:1px solid var(--field);margin-top:4px;border-radius:0 0 14px 14px}
   .custom{display:none;margin-top:10px}.custom.show{display:block}
-  .custom input{width:100%;border:2px solid transparent;background:#fff;border-radius:14px;padding:14px 16px;font:15px monospace;color:var(--text);outline:0}
+  .custom input{width:100%;border:2px solid transparent;background:#fff;border-radius:14px;padding:12px 14px;font:14px monospace;color:var(--text);outline:0}
   .custom input:focus{border-color:var(--accent)}
-  .tokeninfo{margin-top:6px;font-size:13px;font-weight:600;color:var(--purple);min-height:18px}
-  .flip{display:block;margin:-8px auto;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-size:24px;box-shadow:0 4px 14px rgba(31,199,212,.45);position:relative;z-index:1}
-  .slip{display:flex;justify-content:space-between;align-items:center;padding:10px 8px 0;color:var(--muted);font-size:16px}
-  .slip input{width:90px;border:0;border-radius:14px;padding:10px 12px;background:var(--field);color:var(--text);font-weight:600;font-size:17px;font-family:inherit;text-align:right;outline:0}
-  .btns{display:grid;gap:14px;margin-top:20px}
-  .swap{width:100%;padding:22px;border-radius:26px;font-size:21px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--accent),#5ee0c7);box-shadow:0 4px 0 var(--accent-dark);transition:transform .15s,box-shadow .15s}
+  .tokeninfo{margin-top:6px;font-size:13px;font-weight:600;color:var(--purple);min-height:18px;word-break:break-word}
+  .flip{display:block;margin:-8px auto;width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;font-size:22px;position:relative;z-index:1;box-shadow:0 4px 14px rgba(31,199,212,.45)}
+  .slip{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;color:var(--muted);font-size:14px}
+  .sbtns{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .sbtn{padding:8px 12px;border-radius:12px;background:var(--field);color:var(--text);font-weight:700;font-size:14px}
+  .sbtn.on{background:var(--purple);color:#fff}
+  .slipin{display:flex;align-items:center;gap:4px;background:var(--field);border-radius:12px;padding:0 10px;color:var(--text);font-weight:700;font-size:14px}
+  .slipin input{width:48px;border:0;background:none;outline:0;padding:8px 0;text-align:right;font:inherit;color:var(--text)}
+  .info{margin-top:14px;background:var(--field);border-radius:18px;padding:12px 16px;font-size:14px}
+  .irow{display:flex;justify-content:space-between;gap:12px;padding:3px 0}.irow span{color:var(--muted)}.irow b{text-align:right;word-break:break-word}
+  .swap{width:100%;margin-top:16px;padding:clamp(17px,4.6vw,22px);border-radius:26px;font-size:clamp(17px,4.6vw,21px);font-weight:700;color:#fff;background:linear-gradient(90deg,var(--accent),#5ee0c7);box-shadow:0 4px 0 var(--accent-dark);transition:transform .15s,box-shadow .15s}
   .swap:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 var(--accent-dark),0 0 22px rgba(31,199,212,.55)}
-  .swap:disabled{opacity:.55;cursor:default}
-  .ghost{width:100%;padding:18px;border-radius:26px;font-size:18px;font-weight:700;color:var(--purple);background:var(--field)}
-  .status{text-align:center;font-size:16px;color:var(--muted);margin-top:14px;min-height:22px;white-space:pre-wrap;word-break:break-word}
+  .swap:disabled{opacity:.6;cursor:default}
+  .status{text-align:center;font-size:14px;color:var(--muted);margin-top:12px;min-height:20px;white-space:pre-wrap;word-break:break-word}
   .status.ok{color:var(--ok)}.status.er{color:var(--err)}.status a{color:var(--purple)}
-  .launches{background:var(--card);border-radius:34px;padding:28px;margin-top:28px;box-shadow:var(--shadow)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;font-size:14px;color:var(--muted)}
+  .launches{background:var(--card);border-radius:clamp(26px,5vw,34px);padding:clamp(18px,4vw,28px);margin-top:24px;box-shadow:var(--shadow)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;font-size:14px;color:var(--muted)}
   .item{display:grid;grid-template-columns:40px 1fr;gap:2px 10px;align-items:center;border-radius:16px;padding:10px;cursor:pointer;background:var(--field);word-break:break-all;color:var(--text)}
   .item:hover{outline:2px solid var(--accent)}.av{grid-row:span 3;width:40px;height:40px;border-radius:50%}
   .chip{justify-self:start;font-size:11px;font-weight:700;border-radius:99px;padding:1px 9px;color:#fff;background:#64748b}
-  .chip.ACTIVE{background:#059669}.chip.PENDING{background:#f59e0b}.chip.MIGRATED{background:var(--purple)}.chip.FLAGGED{background:var(--err)}
-  .item a{color:var(--purple);font-size:12px}.mut{color:var(--muted);font-size:12px}
+  .chip.ACTIVE{background:#059669}.chip.PENDING{background:#b45309}.chip.MIGRATED{background:var(--purple)}.chip.FLAGGED{background:var(--err)}
+  .item a{color:var(--purple);font-size:12px}.mut{color:var(--muted);font-size:13px}
   .partner{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:22px;color:var(--muted);font-size:14px}.partner img{height:22px}
-  @media (max-width:600px){nav{display:none}}
+  @media (min-width:600px){
+    header{padding:12px 20px}nav{display:flex}.wallet{padding:10px 18px;font-size:16px}.brand img.logo{width:44px;height:44px}
+    .mascot{right:28px}.sub{font-size:16px;margin-bottom:24px}.row{margin-top:12px;gap:12px}.pickbtn{padding:12px 16px}
+    .flip{width:52px;height:52px;font-size:24px}.slip{font-size:16px}.info{font-size:15px}
+  }
 </style>
 </head>
 <body>
 <header>
-  <div class="brand"><img class="logo" src="octopus.jpg" alt="OctoSwap">
+  <div class="brand"><img class="logo" src="octopus.jpg" alt="OctoSwap logo">
     <div><b>OctoSwap</b><small>powered by <img src="ammora.jpg" alt="Ammora"></small></div></div>
   <nav><a href="#swapcard">Swap</a><a href="#launches-sec">Launches</a></nav>
   <button class="wallet" id="connect">Connect wallet</button>
 </header>
 <main>
   <div class="card" id="swapcard">
-    <img class="mascot" src="octopus.jpg" alt="Octopus mascot">
+    <img class="mascot" src="octopus.jpg" alt="Octopus mascot juggling coins">
     <h1>Swap</h1><p class="sub">GIWA Sepolia testnet. Test tokens only. The price updates as you type, no wallet needed.</p>
-    <div class="box"><label>You pay</label>
-      <div class="row"><input id="amt" inputmode="decimal" placeholder="0.0" value="0.01"><select id="tokenFrom"></select></div>
-      <div class="custom" id="customFrom"><input id="addrFrom" placeholder="Token contract address 0x..."><div class="tokeninfo" id="infoFrom"></div></div></div>
-    <button class="flip" id="flip" title="Switch tokens">⇅</button>
-    <div class="box"><label>You receive</label>
-      <div class="row"><input id="amountTo" placeholder="0.0" readonly><select id="tokenTo"></select></div>
-      <div class="custom" id="customTo"><input id="addrTo" placeholder="Token contract address 0x..."><div class="tokeninfo" id="infoTo"></div></div></div>
-    <div class="slip"><span>Slippage, %</span><input id="slip" inputmode="decimal" value="1"></div>
-    <div class="btns"><button class="ghost" id="quote">Get quote</button>
-      <button class="swap" id="swap" disabled>Connect wallet to swap</button></div>
-    <div class="status" id="msg"></div>
+    <div class="box"><label for="amt">You pay</label>
+      <div class="row"><input id="amt" inputmode="decimal" placeholder="0.0" value="0.01" autocomplete="off"><div class="picker" id="pickFrom"></div></div>
+      <div class="custom" id="customFrom"><input id="addrFrom" placeholder="Token contract address 0x..." aria-label="Token contract address to pay with" autocomplete="off" spellcheck="false"><div class="tokeninfo" id="infoFrom"></div></div></div>
+    <button class="flip" id="flip" title="Switch tokens" aria-label="Switch tokens">⇅</button>
+    <div class="box"><label for="amountTo">You receive</label>
+      <div class="row"><input id="amountTo" placeholder="0.0" readonly><div class="picker" id="pickTo"></div></div>
+      <div class="custom" id="customTo"><input id="addrTo" placeholder="Token contract address 0x..." aria-label="Token contract address to receive" autocomplete="off" spellcheck="false"><div class="tokeninfo" id="infoTo"></div></div></div>
+    <div class="slip"><span>Slippage</span>
+      <div class="sbtns"><button class="sbtn" type="button" data-v="0.5">0.5%</button><button class="sbtn" type="button" data-v="1">1%</button><button class="sbtn" type="button" data-v="3">3%</button>
+        <label class="slipin"><input id="slip" inputmode="decimal" value="1" aria-label="Custom slippage in percent">%</label></div></div>
+    <div class="info" id="info" hidden>
+      <div class="irow"><span>Rate</span><b id="iRate"></b></div>
+      <div class="irow"><span>Minimum received</span><b id="iMin"></b></div>
+      <div class="irow"><span>Slippage</span><b id="iSlip"></b></div></div>
+    <button class="swap" id="swap" disabled>Connect wallet to swap</button>
+    <div class="status" id="msg" role="status" aria-live="polite"></div>
   </div>
-  <div class="launches" id="launches-sec"><h2>Launches</h2><div class="grid" id="launches">Loading...</div>
-    <div class="mut" style="margin-top:8px">Click a launch to pick its token in the “You receive” field.</div></div>
+  <div class="launches" id="launches-sec"><h2>Launches</h2><div class="grid" id="launches">Loading launches...</div>
+    <div class="mut" id="launchHint" style="margin-top:8px" hidden>Click a launch to pick its token in the “You receive” field.</div></div>
   <div class="partner">Partner: <img src="ammora.jpg" alt="Ammora"></div>
 </main>
 <script type="module" src="/src/main.js"></script>
-<!-- ===== ПОДВОДНЫЙ МИР ПО БОКАМ: вставь целиком перед </body> в index.html ===== -->
+
+<!-- ===== UNDERWATER WORLD: sea floor, seaweed, bubbles, fish and a shell ===== -->
 <style>
-  header, main { position: relative; z-index: 1; }
-  .sea { position: fixed; top: 0; bottom: 0; width: clamp(90px, 14vw, 220px);
-    pointer-events: none; overflow: hidden; z-index: 0; }
-  .sea.left { left: 0; } .sea.right { right: 0; }
-  /* лучи света */
-  .sea::before { content: ""; position: absolute; inset: 0;
-    background: repeating-linear-gradient(105deg, rgba(255,255,255,.22) 0 14px, transparent 14px 46px);
-    -webkit-mask-image: linear-gradient(180deg, #000, transparent 70%);
-            mask-image: linear-gradient(180deg, #000, transparent 70%);
-    animation: rays 8s ease-in-out infinite alternate; }
-  @keyframes rays { to { opacity: .45; } }
-  /* водоросли */
-  .weed { position: absolute; bottom: -4px; width: 46px; height: 190px; transform-origin: 50% 100%;
-    animation: sway 4s ease-in-out infinite alternate; }
-  @keyframes sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
-  /* пузырьки */
-  .bubble { position: absolute; bottom: -30px; border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.25));
-    border: 1px solid rgba(255,255,255,.7); animation: rise linear infinite; }
-  @keyframes rise { to { transform: translateY(-110vh) translateX(14px); } }
-  /* рыбки */
-  .fish { position: absolute; width: 56px; height: 38px; left: 0;
-    animation: swimX ease-in-out infinite alternate, bobY 3s ease-in-out infinite alternate; }
-  .fish svg { width: 100%; height: 100%; display: block; }
-  @keyframes swimX { from { left: 0; } to { left: calc(100% - 56px); } }
-  @keyframes bobY { from { transform: translateY(0); } to { transform: translateY(-14px); } }
-  /* рыбка разворачивается в конце каждого заплыва (на картинке она смотрит влево) */
-  @keyframes flipToRight { 0%, 49.9% { transform: scaleX(-1); } 50%, 100% { transform: scaleX(1); } }
-  @keyframes flipToLeft  { 0%, 49.9% { transform: scaleX(1); } 50%, 100% { transform: scaleX(-1); } }
-  /* ракушка с жемчужиной: стоит внизу справа, между водорослями и центром */
-  .shell { position: fixed; bottom: 6px; right: calc(clamp(90px, 14vw, 220px) + 10px);
-    width: clamp(110px, 11vw, 170px); pointer-events: none; z-index: 0; }
-  .shell svg { width: 100%; display: block; overflow: visible; }
-  .shell .lid { transform-origin: 100px 98px; animation: lid 5s ease-in-out infinite alternate; }
-  @keyframes lid { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
-  .shell .glint { transform-origin: 100px 92px; animation: twinkle 2.4s ease-in-out infinite; }
-  @keyframes twinkle { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.1); } }
-  @media (max-width: 900px) { .sea, .shell { display: none; } }
+  .sea{position:fixed;top:0;bottom:0;width:clamp(90px,14vw,220px);pointer-events:none;overflow:hidden;z-index:0}
+  .sea.left{left:0}.sea.right{right:0}
+  /* light rays */
+  .sea::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(105deg,rgba(255,255,255,.22) 0 14px,transparent 14px 46px);-webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);mask-image:linear-gradient(180deg,#000,transparent 70%);animation:rays 8s ease-in-out infinite alternate}
+  @keyframes rays{to{opacity:.45}}
+  /* seaweed stands on the sand */
+  .weed{position:absolute;bottom:calc(var(--floor) - 16px);width:46px;height:calc(150px*var(--s,1));transform-origin:50% 100%;animation:sway 4s ease-in-out infinite alternate}
+  @keyframes sway{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+  /* bubbles */
+  .bubble{position:absolute;bottom:-30px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,rgba(255,255,255,.25));border:1px solid rgba(255,255,255,.7);animation:rise linear infinite}
+  @keyframes rise{to{transform:translateY(-110vh) translateX(14px)}}
+  /* fish: they swim across the panel and turn around at both ends */
+  .fish{position:absolute;width:56px;height:38px;left:0;animation:swimX ease-in-out infinite alternate,bobY 3s ease-in-out infinite alternate}
+  .fish svg{width:100%;height:100%;display:block}
+  @keyframes swimX{from{left:0}to{left:calc(100% - 56px)}}
+  @keyframes bobY{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+  @keyframes flipToRight{0%,49.9%{transform:scaleX(-1)}50%,100%{transform:scaleX(1)}}
+  @keyframes flipToLeft{0%,49.9%{transform:scaleX(1)}50%,100%{transform:scaleX(-1)}}
+  /* sandy sea floor across the whole bottom (drawn above the seaweed roots and bubble starts) */
+  .floor{position:fixed;left:0;right:0;bottom:0;height:var(--floor);pointer-events:none;z-index:0;
+    background:radial-gradient(circle at 18% 40%,rgba(255,255,255,.45) 0 2px,transparent 3px) 0 0/70px 34px,radial-gradient(circle at 64% 70%,rgba(176,124,64,.3) 0 2px,transparent 3px) 0 0/90px 40px,linear-gradient(#f6dca4,#e6c07e)}
+  .floor::before{content:"";position:absolute;left:0;right:0;top:-27px;height:28px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V22C120 4 260 34 420 18S720 2 900 20s210 14 300-6V40Z' fill='%23f6dca4'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+  /* shell with a pearl sits on the sand */
+  .shell{position:fixed;bottom:calc(var(--floor)*.42);right:calc(clamp(90px,14vw,220px) + 10px);width:clamp(110px,11vw,170px);pointer-events:none;z-index:0}
+  .shell svg{width:100%;display:block;overflow:visible}
+  .shell .lid{transform-origin:100px 98px;animation:lid 5s ease-in-out infinite alternate}
+  @keyframes lid{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+  .shell .glint{transform-origin:100px 92px;animation:twinkle 2.4s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
+  /* phones: narrower side panels, smaller seaweed and shell, no fish */
+  @media (max-width:900px){.sea{width:30vw}.shell{right:10px;bottom:calc(var(--floor)*.18);width:clamp(72px,20vw,110px)}}
+  @media (max-width:600px){.weed{height:calc(104px*var(--s,1))}.fish{display:none}}
+  @media (prefers-reduced-motion:reduce){.sea *,.shell *,.sea::before{animation:none!important}}
 </style>
 
-<svg width="0" height="0" style="position:absolute">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <g id="weedShape"><path d="M23 190 C5 150 40 120 23 80 C8 50 30 25 23 0" fill="none" stroke="#2fc9a6" stroke-width="12" stroke-linecap="round"/>
       <path d="M23 190 C40 160 10 130 30 100" fill="none" stroke="#7be3c8" stroke-width="7" stroke-linecap="round"/></g>
@@ -133,30 +171,27 @@
   </defs>
 </svg>
 
-<div class="sea left" id="seaLeft"></div>
-<div class="sea right" id="seaRight"></div>
+<div class="sea left" id="seaLeft" aria-hidden="true"></div>
+<div class="sea right" id="seaRight" aria-hidden="true"></div>
+<div class="floor" aria-hidden="true"></div>
 
-<!-- Ракушка с жемчужиной -->
-<div class="shell">
-  <svg viewBox="0 0 200 170" aria-hidden="true">
+<!-- Shell with a pearl -->
+<div class="shell" aria-hidden="true">
+  <svg viewBox="0 0 200 170">
     <defs>
       <radialGradient id="pearlGrad" cx="35%" cy="30%" r="75%">
         <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ece6ff"/><stop offset="1" stop-color="#b9a6f0"/>
       </radialGradient>
     </defs>
     <g stroke="#6b3fa0" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-      <!-- верхняя створка (слегка покачивается) -->
       <g class="lid">
         <path d="M22 98 Q8 22 100 12 Q192 22 178 98 Q100 76 22 98 Z" fill="#ffc7e1"/>
         <path d="M100 98 L100 16 M100 98 L56 28 M100 98 L144 28 M100 98 L28 74 M100 98 L172 74" fill="none" stroke-width="3" opacity=".55"/>
       </g>
-      <!-- нижняя створка -->
       <path d="M14 96 Q20 164 100 166 Q180 164 186 96 Q100 116 14 96 Z" fill="#f7a8cc"/>
       <path d="M100 160 L100 112 M100 160 L58 108 M100 160 L142 108 M100 160 L30 104 M100 160 L170 104" fill="none" stroke-width="3" opacity=".5"/>
-      <!-- внутренность -->
       <ellipse cx="100" cy="98" rx="80" ry="15" fill="#ffeaf4"/>
     </g>
-    <!-- жемчужина -->
     <circle cx="100" cy="88" r="23" fill="url(#pearlGrad)" stroke="#6b3fa0" stroke-width="3.5"/>
     <circle cx="91" cy="79" r="6" fill="#fff" opacity=".9"/>
     <path class="glint" d="M128 62 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#fff"/>
@@ -168,22 +203,22 @@
   const rnd = (a, b) => a + Math.random() * (b - a);
   const FISH_COLORS = ["#ff8fc2", "#ffb84d", "#7645d9", "#1fc7d4"];
   function build(el, mirror) {
-    // водоросли
+    // seaweed
     [8, 52, 96].forEach((x, i) => {
       el.insertAdjacentHTML("beforeend",
-        `<svg class="weed" viewBox="0 0 46 190" style="left:${x}px;height:${150 + i * 25}px;animation-delay:${i * .7}s"><use href="#weedShape"/></svg>`);
+        `<svg class="weed" viewBox="0 0 46 190" style="left:${x}px;--s:${(1 + i * 0.17).toFixed(2)};animation-delay:${i * .7}s"><use href="#weedShape"/></svg>`);
     });
-    // пузырьки
+    // bubbles
     for (let i = 0; i < 9; i++) {
       const s = rnd(8, 22), b = document.createElement("div");
       b.className = "bubble";
       b.style.cssText = `width:${s}px;height:${s}px;left:${rnd(5, 85)}%;animation-duration:${rnd(9, 18)}s;animation-delay:${rnd(0, 12)}s`;
       el.appendChild(b);
     }
-    // рыбки
+    // fish: some swim right, some swim left
     for (let i = 0; i < 4; i++) {
-      const goRight = (i + (mirror ? 1 : 0)) % 2 === 0;   // часть рыбок плывёт вправо, часть влево
-      const d = rnd(6, 11), t = -rnd(0, d * 2);           // d: время одного заплыва, t: сдвиг, чтобы плыли вразнобой
+      const goRight = (i + (mirror ? 1 : 0)) % 2 === 0;
+      const d = rnd(6, 11), t = -rnd(0, d * 2);   // d: one crossing, t: offset so the fish are out of sync
       el.insertAdjacentHTML("beforeend",
         `<div class="fish" style="top:${14 + i * 19}%;animation-duration:${d}s,${rnd(2.5, 4)}s;
           animation-direction:${goRight ? "alternate" : "alternate-reverse"},alternate;animation-delay:${t}s,${t}s">
