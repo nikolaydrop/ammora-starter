@@ -38,7 +38,7 @@
   nav{display:none;gap:22px;font-weight:600}nav a{color:var(--purple);text-decoration:none}
   button{font:inherit;cursor:pointer;border:0}
   .wallet{background:var(--purple);color:#fff;padding:10px 14px;border-radius:16px;font-weight:600;font-size:14px;white-space:nowrap}
-  main{position:relative;z-index:1;flex:1;width:100%;max-width:clamp(420px,46vw,680px);margin:clamp(96px,15vh,170px) auto 26px;padding:0 14px}
+  main{position:relative;z-index:1;flex:1;width:100%;max-width:clamp(420px,46vw,680px);margin:clamp(96px,11vh,130px) auto 26px;padding:0 14px}
   .card{position:relative;background:var(--card);border-radius:clamp(28px,6vw,40px);padding:clamp(18px,4.5vw,32px);box-shadow:var(--shadow)}
   .mascot{--m:clamp(88px,22vw,124px);position:absolute;top:calc(var(--m)*-.64);right:20px;width:var(--m);height:var(--m);border-radius:50%;object-fit:cover;object-position:50% 62%;border:4px solid var(--card);box-shadow:var(--shadow);animation:bob 3s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-6px) rotate(3deg)}}
@@ -84,6 +84,28 @@
   .chip.ACTIVE{background:#059669}.chip.PENDING{background:#b45309}.chip.MIGRATED{background:var(--purple)}.chip.FLAGGED{background:var(--err)}
   .item a{color:var(--purple);font-size:12px}.mut{color:var(--muted);font-size:13px}
   .partner{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:22px;color:var(--muted);font-size:14px}.partner img{height:22px}
+  .balrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
+  .maxbtn{background:var(--purple);color:#fff;border-radius:10px;padding:5px 12px;font-weight:700;font-size:13px}
+  .balerr{margin-top:8px;font-size:13px;color:var(--err);word-break:break-word}
+  .retry{margin:10px auto 0;display:block;background:var(--purple);color:#fff;border-radius:14px;padding:10px 22px;font-weight:700;font-size:15px}
+  .balerr .retry{display:inline-block;margin:6px 0 0;padding:6px 14px;font-size:13px}
+  .switchnet{width:100%;margin-top:10px;padding:13px;border-radius:16px;background:var(--accent);color:#fff;font-weight:700;font-size:16px}
+  .status a{text-decoration:underline;font-weight:700}
+  @media (max-width:600px){
+    main{width:70vw;max-width:none;padding:0;margin:76px auto 22px}
+    .card{padding:16px;border-radius:28px}
+    .mascot{--m:84px;right:10px}
+    h1{font-size:28px}.sub{font-size:14px;margin-bottom:14px}
+    /* the token button moves up into the label row, so the amount gets the full width of the box */
+    .box{position:relative;padding:14px}
+    .box label{display:block;min-height:44px;line-height:44px;margin-top:-4px}
+    .row{display:block;margin-top:0}
+    .row>input{display:block;width:100%;font-size:30px;margin-top:-2px}
+    .picker{position:absolute;top:12px;right:12px}
+    .pickbtn{font-size:18px;padding:10px 11px}
+    .swap{font-size:19px;padding:18px 10px}
+    .slip,.info{font-size:14px}.launches{padding:16px}
+  }
   @media (min-width:600px){
     header{padding:12px 20px}nav{display:flex}.wallet{padding:10px 18px;font-size:16px}.brand img.logo{width:44px;height:44px}
     .mascot{right:28px}.sub{font-size:16px;margin-bottom:24px}.row{margin-top:12px;gap:12px}.pickbtn{padding:12px 16px}
@@ -101,13 +123,17 @@
 <main>
   <div class="card" id="swapcard">
     <img class="mascot" src="octopus.jpg" alt="Octopus mascot juggling coins">
-    <h1>Swap</h1><p class="sub">GIWA Sepolia testnet. Test tokens only. The price updates as you type, no wallet needed.</p>
+    <h1>Swap</h1><p class="sub">GIWA Sepolia testnet. Test tokens only.</p>
     <div class="box"><label for="amt">You pay</label>
-      <div class="row"><input id="amt" inputmode="decimal" placeholder="0.0" value="0.01" autocomplete="off"><div class="picker" id="pickFrom"></div></div>
+      <div class="row"><input id="amt" inputmode="decimal" placeholder="0.0" value="0.1" autocomplete="off"><div class="picker" id="pickFrom"></div></div>
+      <div class="balrow"><span id="balFrom"></span><button class="maxbtn" id="maxBtn" type="button" hidden>Max</button></div>
+      <div class="balerr" id="balErr" hidden><span id="balErrText"></span><br><button class="retry" id="balRetry" type="button">Retry</button></div>
+      <button class="switchnet" id="switchNet" type="button" hidden>Switch to GIWA Sepolia</button>
       <div class="custom" id="customFrom"><input id="addrFrom" placeholder="Token contract address 0x..." aria-label="Token contract address to pay with" autocomplete="off" spellcheck="false"><div class="tokeninfo" id="infoFrom"></div></div></div>
     <button class="flip" id="flip" title="Switch tokens" aria-label="Switch tokens">⇅</button>
     <div class="box"><label for="amountTo">You receive</label>
       <div class="row"><input id="amountTo" placeholder="0.0" readonly><div class="picker" id="pickTo"></div></div>
+      <div class="balrow"><span id="balTo"></span></div>
       <div class="custom" id="customTo"><input id="addrTo" placeholder="Token contract address 0x..." aria-label="Token contract address to receive" autocomplete="off" spellcheck="false"><div class="tokeninfo" id="infoTo"></div></div></div>
     <div class="slip"><span>Slippage</span>
       <div class="sbtns"><button class="sbtn" type="button" data-v="0.5">0.5%</button><button class="sbtn" type="button" data-v="1">1%</button><button class="sbtn" type="button" data-v="3">3%</button>
@@ -116,8 +142,9 @@
       <div class="irow"><span>Rate</span><b id="iRate"></b></div>
       <div class="irow"><span>Minimum received</span><b id="iMin"></b></div>
       <div class="irow"><span>Slippage</span><b id="iSlip"></b></div></div>
-    <button class="swap" id="swap" disabled>Connect wallet to swap</button>
+    <button class="swap" id="swap">Connect wallet to swap</button>
     <div class="status" id="msg" role="status" aria-live="polite"></div>
+    <button class="retry" id="retry" type="button" hidden>Retry</button>
   </div>
   <div class="launches" id="launches-sec"><h2>Launches</h2><div class="grid" id="launches">Loading launches...</div>
     <div class="mut" id="launchHint" style="margin-top:8px" hidden>Click a launch to pick its token in the “You receive” field.</div></div>
@@ -133,15 +160,15 @@
   .sea::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(105deg,rgba(255,255,255,.22) 0 14px,transparent 14px 46px);-webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);mask-image:linear-gradient(180deg,#000,transparent 70%);animation:rays 8s ease-in-out infinite alternate}
   @keyframes rays{to{opacity:.45}}
   /* seaweed stands on the sand */
-  .weed{position:absolute;bottom:calc(var(--floor) - 16px);width:46px;height:calc(150px*var(--s,1));transform-origin:50% 100%;animation:sway 4s ease-in-out infinite alternate}
+  .weed{position:absolute;bottom:calc(var(--floor) - 16px);left:calc(var(--x,8)*var(--k,1)*1px);width:calc(46px*var(--k,1));height:calc(150px*var(--s,1));transform-origin:50% 100%;animation:sway 4s ease-in-out infinite alternate}
   @keyframes sway{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
   /* bubbles */
   .bubble{position:absolute;bottom:-30px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,rgba(255,255,255,.25));border:1px solid rgba(255,255,255,.7);animation:rise linear infinite}
   @keyframes rise{to{transform:translateY(-110vh) translateX(14px)}}
   /* fish: they swim across the panel and turn around at both ends */
-  .fish{position:absolute;width:56px;height:38px;left:0;animation:swimX ease-in-out infinite alternate,bobY 3s ease-in-out infinite alternate}
+  .fish{--fw:56px;position:absolute;width:var(--fw);height:calc(var(--fw)*.68);left:0;animation:swimX ease-in-out infinite alternate,bobY 3s ease-in-out infinite alternate}
   .fish svg{width:100%;height:100%;display:block}
-  @keyframes swimX{from{left:0}to{left:calc(100% - 56px)}}
+  @keyframes swimX{from{left:0}to{left:calc(100% - var(--fw))}}
   @keyframes bobY{from{transform:translateY(0)}to{transform:translateY(-14px)}}
   @keyframes flipToRight{0%,49.9%{transform:scaleX(-1)}50%,100%{transform:scaleX(1)}}
   @keyframes flipToLeft{0%,49.9%{transform:scaleX(1)}50%,100%{transform:scaleX(-1)}}
@@ -157,8 +184,8 @@
   .shell .glint{transform-origin:100px 92px;animation:twinkle 2.4s ease-in-out infinite}
   @keyframes twinkle{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
   /* phones: narrower side panels, smaller seaweed and shell, no fish */
-  @media (max-width:900px){.sea{width:30vw}.shell{right:10px;bottom:calc(var(--floor)*.18);width:clamp(72px,20vw,110px)}}
-  @media (max-width:600px){.weed{height:calc(104px*var(--s,1))}.fish{display:none}}
+  @media (max-width:900px){.sea{width:22vw}.shell{right:10px;bottom:calc(var(--floor)*.18);width:clamp(72px,20vw,110px)}}
+  @media (max-width:600px){.sea{width:15vw}.weed{--k:.4;height:calc(120px*var(--s,1))}.fish{--fw:34px}}
   @media (prefers-reduced-motion:reduce){.sea *,.shell *,.sea::before{animation:none!important}}
 </style>
 
@@ -206,7 +233,7 @@
     // seaweed
     [8, 52, 96].forEach((x, i) => {
       el.insertAdjacentHTML("beforeend",
-        `<svg class="weed" viewBox="0 0 46 190" style="left:${x}px;--s:${(1 + i * 0.17).toFixed(2)};animation-delay:${i * .7}s"><use href="#weedShape"/></svg>`);
+        `<svg class="weed" viewBox="0 0 46 190" preserveAspectRatio="none" style="--x:${x};--s:${(1 + i * 0.17).toFixed(2)};animation-delay:${i * .7}s"><use href="#weedShape"/></svg>`);
     });
     // bubbles
     for (let i = 0; i < 9; i++) {
