@@ -34,7 +34,7 @@
   .brand{display:flex;align-items:center;gap:10px;min-width:0}
   .brand img.logo{width:42px;height:42px;border-radius:50%;object-fit:cover;object-position:50% 62%;flex:none}
   .brand b{font-size:19px;display:block;line-height:1.1}
-  .brand small{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:5px}.brand small img{height:12px}
+  .brand small{color:var(--muted);font-size:13px;display:flex;align-items:center;gap:6px;margin-top:2px}.brand small img{height:20px;border-radius:4px}
   nav{display:none;gap:22px;font-weight:600}nav a{color:var(--purple);text-decoration:none}
   button{font:inherit;cursor:pointer;border:0}
   .wallet{background:var(--purple);color:#fff;padding:10px 14px;border-radius:16px;font-weight:600;font-size:14px;white-space:nowrap}
@@ -106,8 +106,10 @@
     .swap{font-size:19px;padding:18px 10px}
     .slip,.info{font-size:14px}.launches{padding:16px}
   }
+  .brand small{white-space:nowrap}
+  @media (max-width:380px){.brand small{font-size:12px}.brand small img{height:16px}.wallet{padding:9px 11px;font-size:13px}}
   @media (min-width:600px){
-    header{padding:12px 20px}nav{display:flex}.wallet{padding:10px 18px;font-size:16px}.brand img.logo{width:44px;height:44px}
+    header{padding:12px 20px}.brand small img{height:26px}nav{display:flex}.wallet{padding:10px 18px;font-size:16px}.brand img.logo{width:44px;height:44px}
     .mascot{right:28px}.sub{font-size:16px;margin-bottom:24px}.row{margin-top:12px;gap:12px}.pickbtn{padding:12px 16px}
     .flip{width:52px;height:52px;font-size:24px}.slip{font-size:16px}.info{font-size:15px}
   }
@@ -148,7 +150,7 @@
   </div>
   <div class="launches" id="launches-sec"><h2>Launches</h2><div class="grid" id="launches">Loading launches...</div>
     <div class="mut" id="launchHint" style="margin-top:8px" hidden>Click a launch to pick its token in the “You receive” field.</div></div>
-  <div class="partner">Partner: <img src="ammora.jpg" alt="Ammora"></div>
+  <div class="partner"><img src="ammora.jpg" alt="Ammora"></div>
 </main>
 <script type="module" src="/src/main.js"></script>
 
